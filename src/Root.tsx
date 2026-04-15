@@ -1,47 +1,74 @@
 import "./index.css";
-import { Composition } from "remotion";
-import { HelloWorld, myCompSchema } from "./HelloWorld";
-import { Logo, myCompSchema2 } from "./HelloWorld/Logo";
+import { CalculateMetadataFunction, Composition, Folder } from "remotion";
+import {
+  getGroupVideoData,
+  getVideoDimensions,
+  WORLD_CUP_FPS,
+  WORLD_CUP_TOTAL_FRAMES,
+  WorldCupGroupVideo,
+  WorldCupGroupVideoProps,
+  worldCupGroupVideoSchema,
+} from "./world-cup";
 
-// Each <Composition> is an entry in the sidebar!
+const calculateMetadata: CalculateMetadataFunction<WorldCupGroupVideoProps> = ({
+  props,
+}) => {
+  getGroupVideoData(props.groupId);
+
+  return {
+    fps: WORLD_CUP_FPS,
+    durationInFrames: WORLD_CUP_TOTAL_FRAMES,
+    ...getVideoDimensions(props.format),
+  };
+};
+
+const defaultTemplateProps = {
+  groupId: "group_a",
+  format: "landscape",
+} satisfies WorldCupGroupVideoProps;
 
 export const RemotionRoot: React.FC = () => {
   return (
-    <>
+    <Folder name="WorldCupGroups">
       <Composition
-        // You can take the "id" to render a video:
-        // npx remotion render HelloWorld
-        id="HelloWorld"
-        component={HelloWorld}
-        durationInFrames={150}
-        fps={30}
+        id="WorldCupGroupTemplate"
+        component={WorldCupGroupVideo}
+        durationInFrames={WORLD_CUP_TOTAL_FRAMES}
+        fps={WORLD_CUP_FPS}
         width={1920}
         height={1080}
-        // You can override these props for each render:
-        // https://www.remotion.dev/docs/parametrized-rendering
-        schema={myCompSchema}
-        defaultProps={{
-          titleText: "Welcome to Remotion",
-          titleColor: "#000000",
-          logoColor1: "#91EAE4",
-          logoColor2: "#86A8E7",
-        }}
+        schema={worldCupGroupVideoSchema}
+        defaultProps={defaultTemplateProps}
+        calculateMetadata={calculateMetadata}
       />
-
-      {/* Mount any React component to make it show up in the sidebar and work on it individually! */}
       <Composition
-        id="OnlyLogo"
-        component={Logo}
-        durationInFrames={150}
-        fps={30}
+        id="WorldCupGroupLandscape"
+        component={WorldCupGroupVideo}
+        durationInFrames={WORLD_CUP_TOTAL_FRAMES}
+        fps={WORLD_CUP_FPS}
         width={1920}
         height={1080}
-        schema={myCompSchema2}
+        schema={worldCupGroupVideoSchema}
         defaultProps={{
-          logoColor1: "#91dAE2" as const,
-          logoColor2: "#86A8E7" as const,
+          groupId: "group_a",
+          format: "landscape",
         }}
+        calculateMetadata={calculateMetadata}
       />
-    </>
+      <Composition
+        id="WorldCupGroupVertical"
+        component={WorldCupGroupVideo}
+        durationInFrames={WORLD_CUP_TOTAL_FRAMES}
+        fps={WORLD_CUP_FPS}
+        width={1080}
+        height={1920}
+        schema={worldCupGroupVideoSchema}
+        defaultProps={{
+          groupId: "group_a",
+          format: "vertical",
+        }}
+        calculateMetadata={calculateMetadata}
+      />
+    </Folder>
   );
 };

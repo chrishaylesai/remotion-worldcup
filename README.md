@@ -1,54 +1,76 @@
-# Remotion video
+# FIFA World Cup Group Video Template
 
-<p align="center">
-  <a href="https://github.com/remotion-dev/logo">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-dark.apng">
-      <img alt="Animated Remotion Logo" src="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-light.gif">
-    </picture>
-  </a>
-</p>
+This project is a Remotion template for rendering FIFA World Cup group videos from `public/master.json`.
 
-Welcome to your Remotion project!
+Each render is driven by two props:
+
+- `groupId`: one of `group_a` through `group_l`
+- `format`: `"landscape"` or `"vertical"`
+
+Every video includes:
+
+1. a group title scene
+2. four team spotlight scenes
+3. a final overview scene with all teams and the full fixture list
+
+## Assets
+
+- `public/master.json`: source data for groups, teams, rankings, coaches, and fixtures
+- `public/flags/*.svg`: flag assets referenced by the JSON
 
 ## Commands
 
-**Install Dependencies**
+Install dependencies:
 
 ```console
 npm i
 ```
 
-**Start Preview**
+Start Remotion Studio:
 
 ```console
 npm run dev
 ```
 
-**Render video**
+Run checks:
 
 ```console
-npx remotion render
+npm run lint
 ```
 
-**Upgrade Remotion**
+Bundle the project:
 
 ```console
-npx remotion upgrade
+npm run build
 ```
 
-## Docs
+Render every group in both formats:
 
-Get started with Remotion by reading the [fundamentals page](https://www.remotion.dev/docs/the-fundamentals).
+```console
+npm run render:all
+```
 
-## Help
+## Compositions
 
-We provide help on our [Discord server](https://discord.gg/6VzzNDwUwV).
+- `WorldCupGroupTemplate`: general-purpose render entrypoint
+- `WorldCupGroupLandscape`: landscape preview preset
+- `WorldCupGroupVertical`: vertical preview preset
 
-## Issues
+## Rendering
 
-Found an issue with Remotion? [File an issue here](https://github.com/remotion-dev/remotion/issues/new).
+Render a landscape group video:
 
-## License
+```console
+npx remotion render WorldCupGroupTemplate out/group-a-landscape.mp4 --props='{"groupId":"group_a","format":"landscape"}'
+```
 
-Note that for some entities a company license is needed. [Read the terms here](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md).
+Render a vertical group video:
+
+```console
+npx remotion render WorldCupGroupTemplate out/group-b-vertical.mp4 --props='{"groupId":"group_b","format":"vertical"}'
+```
+
+Batch renders are written to:
+
+- `renders/landscape/group-a.mp4` through `group-l.mp4`
+- `renders/portrait/group-a.mp4` through `group-l.mp4`

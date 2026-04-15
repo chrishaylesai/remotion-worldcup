@@ -1,7 +1,23 @@
-node_modules
-dist
-.DS_Store
-.env
+# Dependencies
+node_modules/
 
-# Ignore the output video from Git but not videos you import into src/.
-out
+# Build output
+build/
+dist/
+
+# Render output
+out/
+renders/
+
+# Local environment
+.env
+.env.*
+.DS_Store
+
+# Tool caches and local assistant state
+.cache/
+.remotion/
+.agents/
+.claude/
+.codex/
+.gemini/
