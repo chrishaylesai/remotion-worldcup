@@ -802,7 +802,7 @@ const infoPanelStyle = (theme: FormatTheme): React.CSSProperties => {
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: theme.format === "vertical" ? "flex-start" : "center",
     gap: 24,
     padding: theme.format === "vertical" ? 28 : 36,
     borderRadius: 36,
