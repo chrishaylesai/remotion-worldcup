@@ -26,6 +26,11 @@ const SURFACE = "rgba(8, 19, 38, 0.72)";
 const PANEL_BORDER = "rgba(255, 255, 255, 0.14)";
 const TEXT_PRIMARY = "#f7fbff";
 const TEXT_MUTED = "rgba(231, 242, 255, 0.78)";
+const FORM_COLORS: Record<string, string> = {
+  W: "#39d98a",
+  D: "#aeb8c5",
+  L: "#f45d48",
+};
 const TITLE_REVEAL_DELAY = 4;
 const TITLE_CARD_REVEAL_DELAY = 18;
 const TEAM_PANEL_REVEAL_DELAY = 10;
@@ -217,7 +222,7 @@ const TeamScene: React.FC<{
       accentColor={accentColor}
       eyebrow={`${groupLabel.toUpperCase()} TEAM SPOTLIGHT`}
       title={team.name}
-      subtitle="Current FIFA ranking and head coach."
+      subtitle="Team Fact Sheet"
     >
       <div
         style={{
@@ -245,6 +250,9 @@ const TeamScene: React.FC<{
             opacity: flagReveal,
           }}
         >
+          {theme.format === "landscape" ? (
+            <RecentForm form={team.recentForm} theme={theme} align="center" />
+          ) : null}
           <Img
             src={staticFile(team.flagPath)}
             style={{
@@ -267,6 +275,9 @@ const TeamScene: React.FC<{
           }}
         >
           <div style={stackStyle(theme.panelGap)}>
+            {theme.format === "vertical" ? (
+              <RecentForm form={team.recentForm} theme={theme} />
+            ) : null}
             <InfoPill label="FIFA Ranking" value={`#${team.fifaRanking}`} />
             <InfoPill label="Head Coach" value={team.headCoach} />
           </div>
@@ -646,6 +657,79 @@ const InfoPill: React.FC<{
   );
 };
 
+const RecentForm: React.FC<{
+  form: string;
+  theme: FormatTheme;
+  align?: "start" | "center";
+}> = ({ form, theme, align = "start" }) => {
+  const letters = form.split("");
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: theme.format === "vertical" ? 12 : 14,
+        alignItems: align === "center" ? "center" : "flex-start",
+        width: "100%",
+        padding: theme.format === "vertical" ? "20px 22px" : 0,
+        borderRadius: theme.format === "vertical" ? 24 : undefined,
+        border:
+          theme.format === "vertical" ? `1px solid ${PANEL_BORDER}` : undefined,
+        backgroundColor:
+          theme.format === "vertical" ? "rgba(255, 255, 255, 0.04)" : undefined,
+      }}
+    >
+      <div
+        style={{
+          color: TEXT_MUTED,
+          fontFamily: DISPLAY_FONT,
+          fontSize: theme.microSize,
+          letterSpacing: "0.08em",
+          textAlign: align === "center" ? "center" : "left",
+          textTransform: "uppercase",
+        }}
+      >
+        Form (last 5 games)
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: align === "center" ? "center" : "flex-start",
+          gap: theme.format === "vertical" ? 12 : 14,
+          width: "100%",
+        }}
+      >
+        {letters.map((letter, index) => (
+          <div
+            key={`${letter}-${index}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: theme.format === "vertical" ? 58 : 64,
+              height: theme.format === "vertical" ? 58 : 64,
+              borderRadius: 18,
+              border: `1px solid ${withAlpha(FORM_COLORS[letter] ?? FORM_COLORS.D, 0.5)}`,
+              backgroundColor: withAlpha(
+                FORM_COLORS[letter] ?? FORM_COLORS.D,
+                0.16,
+              ),
+              color: FORM_COLORS[letter] ?? FORM_COLORS.D,
+              fontFamily: DISPLAY_FONT,
+              fontSize: theme.format === "vertical" ? 32 : 36,
+              lineHeight: 1,
+              textTransform: "uppercase",
+            }}
+          >
+            {letter}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const BackgroundDecor: React.FC<{
   format: RenderFormat;
 }> = ({ format }) => {
@@ -792,6 +876,8 @@ const flagStageStyle = (
     )} 0%, transparent 40%), linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, ${SURFACE} 100%)`,
     boxShadow: "0 34px 90px rgba(0, 0, 0, 0.22)",
     display: "flex",
+    flexDirection: "column",
+    gap: theme.format === "vertical" ? 0 : 30,
     alignItems: "center",
     justifyContent: "center",
   };

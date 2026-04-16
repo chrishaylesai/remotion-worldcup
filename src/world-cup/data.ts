@@ -22,6 +22,7 @@ export type TeamCardData = {
   key: string;
   flagPath: string;
   fifaRanking: number;
+  recentForm: string;
   headCoach: string;
   fact: string;
   confederation: string;
@@ -57,6 +58,7 @@ type RawFixture = {
 type RawTeamData = {
   flag: string;
   fifa_ranking: number;
+  recentForm: string;
   head_coach: string;
   fact: string;
   confederation: string;
@@ -132,6 +134,7 @@ export const getGroupVideoData = (groupId: string): GroupVideoData => {
       key: teamKey,
       flagPath,
       fifaRanking: teamData.fifa_ranking,
+      recentForm: teamData.recentForm,
       headCoach: teamData.head_coach,
       fact: teamData.fact,
       confederation: teamData.confederation,
@@ -168,6 +171,7 @@ const isRawTeamData = (value: unknown): value is RawTeamData => {
   return (
     typeof record.flag === "string" &&
     typeof record.fifa_ranking === "number" &&
+    typeof record.recentForm === "string" &&
     typeof record.head_coach === "string" &&
     typeof record.fact === "string" &&
     typeof record.confederation === "string" &&
