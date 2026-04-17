@@ -44,6 +44,7 @@ type FormatTheme = {
   paddingY: number;
   displaySize: number;
   headingSize: number;
+  headerGap: number;
   bodySize: number;
   metaSize: number;
   microSize: number;
@@ -135,10 +136,10 @@ const TitleScene: React.FC<{
         <div
           style={{
             ...heroCardStyle(theme),
-            minHeight: theme.format === "vertical" ? 460 : 280,
+            minHeight: theme.format === "vertical" ? 460 : 248,
           }}
         >
-          <div style={stackStyle(18)}>
+          <div style={stackStyle(theme.format === "vertical" ? 18 : 14)}>
             <div style={heroLabelStyle(theme)}>Tournament Preview Package</div>
             <div
               style={{
@@ -513,7 +514,7 @@ const SceneShell: React.FC<{
           height: "100%",
         }}
       >
-        <div style={stackStyle(14)}>
+        <div style={stackStyle(theme.headerGap)}>
           <div style={eyebrowStyle(theme, accentColor)}>{eyebrow}</div>
           {showTitle ? (
             <div
@@ -786,6 +787,7 @@ const getFormatTheme = (format: RenderFormat): FormatTheme => {
       paddingY: 76,
       displaySize: 140,
       headingSize: 64,
+      headerGap: 14,
       bodySize: 28,
       metaSize: 20,
       microSize: 16,
@@ -801,13 +803,14 @@ const getFormatTheme = (format: RenderFormat): FormatTheme => {
   return {
     format,
     paddingX: 80,
-    paddingY: 72,
+    paddingY: 60,
     displaySize: 208,
-    headingSize: 82,
+    headingSize: 74,
+    headerGap: 10,
     bodySize: 32,
     metaSize: 24,
     microSize: 18,
-    sceneGap: 28,
+    sceneGap: 24,
     panelGap: 24,
     teamFlagWidth: 480,
     teamFlagHeight: 340,
@@ -849,7 +852,7 @@ const fixtureRowStyle = (theme: FormatTheme): React.CSSProperties => {
 
 const heroCardStyle = (theme: FormatTheme): React.CSSProperties => {
   return {
-    padding: theme.format === "vertical" ? 28 : 36,
+    padding: theme.format === "vertical" ? 28 : 32,
     borderRadius: 36,
     border: `1px solid ${PANEL_BORDER}`,
     background:
