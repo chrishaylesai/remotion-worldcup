@@ -1,6 +1,7 @@
 import React from "react";
 import {
   AbsoluteFill,
+  Html5Audio,
   Img,
   Sequence,
   interpolate,
@@ -37,6 +38,9 @@ const TEAM_PANEL_REVEAL_DELAY = 10;
 const TEAM_FLAG_REVEAL_DELAY = 18;
 const OVERVIEW_TEAM_REVEAL_DELAY = 10;
 const OVERVIEW_SCHEDULE_REVEAL_DELAY = 22;
+const BACKGROUND_AUDIO_PATH = "audio/TheGrind.mp3";
+const BACKGROUND_AUDIO_VOLUME = 1;
+const AUDIO_FADE_FRAMES = 30;
 
 type FormatTheme = {
   format: RenderFormat;
@@ -65,6 +69,10 @@ export const WorldCupGroupVideo: React.FC<WorldCupGroupVideoProps> = ({
 
   return (
     <AbsoluteFill style={backgroundStyle}>
+      <Html5Audio
+        src={staticFile(BACKGROUND_AUDIO_PATH)}
+        volume={(frame) => getBackgroundAudioVolume(frame)}
+      />
       <BackgroundDecor format={format} />
       <Sequence durationInFrames={TITLE_SCENE_FRAMES}>
         <TitleScene data={data} theme={theme} />
@@ -90,6 +98,24 @@ export const WorldCupGroupVideo: React.FC<WorldCupGroupVideoProps> = ({
         <OverviewScene data={data} theme={theme} />
       </Sequence>
     </AbsoluteFill>
+  );
+};
+
+const getBackgroundAudioVolume = (frame: number) => {
+  return (
+    interpolate(frame, [0, AUDIO_FADE_FRAMES], [0, BACKGROUND_AUDIO_VOLUME], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    }) *
+    interpolate(
+      frame,
+      [WORLD_CUP_TOTAL_FRAMES - AUDIO_FADE_FRAMES, WORLD_CUP_TOTAL_FRAMES],
+      [1, 0],
+      {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      },
+    )
   );
 };
 
@@ -399,7 +425,7 @@ const OverviewScene: React.FC<{
             theme.format === "vertical" ? "1fr" : "minmax(0, 0.95fr) minmax(0, 1.25fr)",
           gap: theme.panelGap,
           flex: 1,
-          marginTop: theme.format === "vertical" ? 40 : 20,
+          marginTop: theme.format === "vertical" ? 40 : 0,
         }}
       >
         <div
@@ -421,16 +447,19 @@ const OverviewScene: React.FC<{
         </div>
         <div
           style={{
-            ...schedulePanelStyle(theme),
+            ...schedulePanelStyle(),
             transform: `translateY(${interpolate(scheduleReveal, [0, 1], [60, 0])}px)`,
             opacity: scheduleReveal,
           }}
         >
-          <div style={stackStyle(18)}>
+          <div style={stackStyle(theme.format === "vertical" ? 18 : 14)}>
             <div style={sectionHeaderStyle(theme)}>Schedule</div>
-            <div style={stackStyle(theme.format === "vertical" ? 16 : 18)}>
+            <div style={stackStyle(theme.format === "vertical" ? 16 : 14)}>
               {data.fixtures.map((fixtureDay) => (
-                <div key={fixtureDay.date} style={stackStyle(10)}>
+                <div
+                  key={fixtureDay.date}
+                  style={stackStyle(theme.format === "vertical" ? 10 : 8)}
+                >
                   <div
                     style={{
                       color: ACCENT_COLORS[1],
@@ -444,7 +473,7 @@ const OverviewScene: React.FC<{
                   </div>
                   <div style={stackStyle(10)}>
                     {fixtureDay.fixtures.map((fixture) => (
-                      <div key={`${fixtureDay.date}-${fixture.match}`} style={fixtureRowStyle(theme)}>
+                      <div key={`${fixtureDay.date}-${fixture.match}`} style={fixtureRowStyle()}>
                         <div
                           style={{
                             flex: 1,
@@ -828,9 +857,9 @@ const overviewTeamGridStyle = (theme: FormatTheme): React.CSSProperties => {
   };
 };
 
-const schedulePanelStyle = (theme: FormatTheme): React.CSSProperties => {
+const schedulePanelStyle = (): React.CSSProperties => {
   return {
-    padding: theme.format === "vertical" ? 24 : 28,
+    padding: 24,
     borderRadius: 34,
     border: `1px solid ${PANEL_BORDER}`,
     background: `linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, ${SURFACE} 100%)`,
@@ -839,13 +868,13 @@ const schedulePanelStyle = (theme: FormatTheme): React.CSSProperties => {
   };
 };
 
-const fixtureRowStyle = (theme: FormatTheme): React.CSSProperties => {
+const fixtureRowStyle = (): React.CSSProperties => {
   return {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "baseline",
     gap: 20,
-    padding: theme.format === "vertical" ? "10px 0" : "12px 0",
+    padding: "10px 0",
     borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
   };
 };
