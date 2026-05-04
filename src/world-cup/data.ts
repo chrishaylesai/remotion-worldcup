@@ -2,9 +2,9 @@ import { z } from "zod";
 import masterData from "../../public/master.json";
 
 export const WORLD_CUP_FPS = 30;
-export const TITLE_SCENE_FRAMES = 90;
-export const TEAM_SCENE_FRAMES = 120;
-export const OVERVIEW_SCENE_FRAMES = 240;
+export const TITLE_SCENE_FRAMES = 180;
+export const TEAM_SCENE_FRAMES = 240;
+export const OVERVIEW_SCENE_FRAMES = 480;
 export const TEAM_COUNT = 4;
 export const WORLD_CUP_TOTAL_FRAMES =
   TITLE_SCENE_FRAMES + TEAM_SCENE_FRAMES * TEAM_COUNT + OVERVIEW_SCENE_FRAMES;

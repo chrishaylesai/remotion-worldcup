@@ -54,6 +54,9 @@ type FormatTheme = {
   microSize: number;
   sceneGap: number;
   panelGap: number;
+  overlaySize: number;
+  overlayTop: number;
+  overlayRight: number;
   teamFlagWidth: number;
   teamFlagHeight: number;
   summaryFlagWidth: number;
@@ -71,6 +74,8 @@ export const WorldCupGroupVideo: React.FC<WorldCupGroupVideoProps> = ({
     <AbsoluteFill style={backgroundStyle}>
       <Html5Audio
         src={staticFile(BACKGROUND_AUDIO_PATH)}
+        loop
+        loopVolumeCurveBehavior="extend"
         volume={(frame) => getBackgroundAudioVolume(frame)}
       />
       <BackgroundDecor format={format} />
@@ -97,6 +102,7 @@ export const WorldCupGroupVideo: React.FC<WorldCupGroupVideoProps> = ({
       >
         <OverviewScene data={data} theme={theme} />
       </Sequence>
+      <OverlayPlaceholder theme={theme} />
     </AbsoluteFill>
   );
 };
@@ -543,7 +549,12 @@ const SceneShell: React.FC<{
           height: "100%",
         }}
       >
-        <div style={stackStyle(theme.headerGap)}>
+        <div
+          style={{
+            ...stackStyle(theme.headerGap),
+            maxWidth: `calc(100% - ${theme.overlaySize + theme.panelGap}px)`,
+          }}
+        >
           <div style={eyebrowStyle(theme, accentColor)}>{eyebrow}</div>
           {showTitle ? (
             <div
@@ -573,6 +584,24 @@ const SceneShell: React.FC<{
         {children}
       </div>
     </AbsoluteFill>
+  );
+};
+
+const OverlayPlaceholder: React.FC<{
+  theme: FormatTheme;
+}> = ({ theme }) => {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: theme.overlayTop,
+        right: theme.overlayRight,
+        width: theme.overlaySize,
+        height: theme.overlaySize,
+        backgroundColor: "#000",
+        zIndex: 20,
+      }}
+    />
   );
 };
 
@@ -822,6 +851,9 @@ const getFormatTheme = (format: RenderFormat): FormatTheme => {
       microSize: 16,
       sceneGap: 28,
       panelGap: 22,
+      overlaySize: 260,
+      overlayTop: 76,
+      overlayRight: 56,
       teamFlagWidth: 360,
       teamFlagHeight: 260,
       summaryFlagWidth: 84,
@@ -841,6 +873,9 @@ const getFormatTheme = (format: RenderFormat): FormatTheme => {
     microSize: 18,
     sceneGap: 24,
     panelGap: 24,
+    overlaySize: 300,
+    overlayTop: 60,
+    overlayRight: 80,
     teamFlagWidth: 480,
     teamFlagHeight: 340,
     summaryFlagWidth: 100,
